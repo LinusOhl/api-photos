@@ -9,32 +9,32 @@ import {
   store,
   update,
   destroy,
-} from "../controllers/_controller";
+} from "../controllers/photo_controller";
 const router = express.Router();
 
 /**
- * GET /resource
+ * GET /photos
  */
 router.get("/", index);
 
 /**
- * GET /resource/:resourceId
+ * GET /photos/:photoId
  */
-router.get("/:resourceId", show);
+router.get("/:photoId", show);
 
 /**
- * POST /resource
+ * POST /photos
  */
 router.post("/", [], store);
 
 /**
- * PATCH /resource/:resourceId
+ * PATCH /photos/:photoId
  */
-router.patch("/:resourceId", [], update);
+router.patch("/:photoId", [], update);
 
 /**
- * DELETE /resource/:resourceId
+ * DELETE /photos/:photoId
  */
-router.delete("/:resourceId", destroy);
+router.delete("/:photoId", destroy);
 
 export default router;
