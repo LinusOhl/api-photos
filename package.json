@@ -19,6 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/debug": "^4.1.7",
+    "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.11.18",
     "env-cmd": "^10.1.0",
     "nodemon": "^2.0.20",
