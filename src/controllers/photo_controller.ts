@@ -100,7 +100,40 @@ export const createPhoto = async (req: Request, res: Response) => {
 /**
  * Update a photo
  */
-export const updatePhoto = async (req: Request, res: Response) => {};
+export const updatePhoto = async (req: Request, res: Response) => {
+  const photoId = Number(req.params.photoId);
+
+  try {
+    const photo = await prisma.photo.updateMany({
+      where: {
+        id: photoId,
+        userId: req.token!.sub,
+      },
+      data: {
+        title: req.body.title,
+        url: req.body.url,
+        comment: req.body.comment,
+      },
+    });
+
+    const changedPhoto = await prisma.photo.findMany({
+      where: {
+        id: photoId,
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: changedPhoto,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Delete a photo
