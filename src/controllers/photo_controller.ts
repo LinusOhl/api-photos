@@ -46,7 +46,30 @@ export const show = async (req: Request, res: Response) => {};
 /**
  * Create a new photo
  */
-export const store = async (req: Request, res: Response) => {};
+export const store = async (req: Request, res: Response) => {
+  try {
+    const photo = await prisma.photo.create({
+      data: {
+        title: req.body.title,
+        url: req.body.url,
+        comment: req.body.comment,
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: photo,
+    });
+  } catch (err) {
+    debug("Error thrown when creating a photo %o: %o", req.body, err);
+
+    res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Update a photo
