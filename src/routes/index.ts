@@ -1,5 +1,5 @@
 import express from "express";
-import resource from "./_router";
+import { register, login, refresh } from "../controllers/user_controller";
 
 // instantiate a new router
 const router = express.Router();
@@ -14,8 +14,18 @@ router.get("/", (req, res) => {
 });
 
 /**
- * [EXAMPLE] /resource
+ * POST /register
  */
-// router.use('/resource', resource)
+router.post("/register", register);
+
+/**
+ * POST /login
+ */
+router.post("/login", login);
+
+/**
+ * POST /refresh
+ */
+router.post("/refresh", refresh);
 
 export default router;
