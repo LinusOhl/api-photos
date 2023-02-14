@@ -16,4 +16,6 @@ export const createUserRules = [
       }
     }),
   body("password").isString().bail().isLength({ min: 6 }),
+  body("first_name").isString().bail().isLength({ min: 3 }),
+  body("last_name").isString().bail().isLength({ min: 3 }),
 ];
