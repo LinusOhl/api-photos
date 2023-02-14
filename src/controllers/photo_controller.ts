@@ -5,7 +5,6 @@ import Debug from "debug";
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import prisma from "../prisma";
-import { getUserByEmail } from "../services/user_service";
 
 // Create a new debug instance
 const debug = Debug("prisma-photos:photo_controller");
@@ -13,7 +12,7 @@ const debug = Debug("prisma-photos:photo_controller");
 /**
  * Get all photos
  */
-export const index = async (req: Request, res: Response) => {
+export const getAllPhotos = async (req: Request, res: Response) => {
   // const profile = getUserByEmail(req.token!.email);
   console.log(req.token);
 
@@ -41,7 +40,7 @@ export const index = async (req: Request, res: Response) => {
 /**
  * Get a single photo
  */
-export const show = async (req: Request, res: Response) => {
+export const getPhoto = async (req: Request, res: Response) => {
   const photoId = Number(req.params.photoId);
   try {
     const photo = await prisma.photo.findFirst({
@@ -53,7 +52,12 @@ export const show = async (req: Request, res: Response) => {
 
     res.send({
       status: "success",
-      data: photo,
+      data: {
+        id: photoId,
+        title: photo?.title,
+        url: photo?.url,
+        comment: photo?.comment,
+      },
     });
   } catch (err) {
     debug(
@@ -68,7 +72,7 @@ export const show = async (req: Request, res: Response) => {
 /**
  * Create a new photo
  */
-export const store = async (req: Request, res: Response) => {
+export const createPhoto = async (req: Request, res: Response) => {
   try {
     const photo = await prisma.photo.create({
       data: {
@@ -96,9 +100,9 @@ export const store = async (req: Request, res: Response) => {
 /**
  * Update a photo
  */
-export const update = async (req: Request, res: Response) => {};
+export const updatePhoto = async (req: Request, res: Response) => {};
 
 /**
  * Delete a photo
  */
-export const destroy = async (req: Request, res: Response) => {};
+export const deletePhoto = async (req: Request, res: Response) => {};
