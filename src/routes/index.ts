@@ -1,5 +1,6 @@
 import express from "express";
 import { register, login, refresh } from "../controllers/user_controller";
+import { createUserRules } from "../validations/user_rules";
 
 // instantiate a new router
 const router = express.Router();
@@ -16,7 +17,7 @@ router.get("/", (req, res) => {
 /**
  * POST /register
  */
-router.post("/register", register);
+router.post("/register", createUserRules, register);
 
 /**
  * POST /login
