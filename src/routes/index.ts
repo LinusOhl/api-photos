@@ -1,5 +1,7 @@
 import express from "express";
+import photos from "./photos";
 import { register, login, refresh } from "../controllers/user_controller";
+import { validateToken } from "../middlewares/auth/jwt";
 import { createUserRules } from "../validations/user_rules";
 
 // instantiate a new router
@@ -13,6 +15,8 @@ router.get("/", (req, res) => {
     message: "I AM API, BEEP BOOP",
   });
 });
+
+router.use("/photos", validateToken, photos);
 
 /**
  * POST /register
