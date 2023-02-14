@@ -41,7 +41,29 @@ export const index = async (req: Request, res: Response) => {
 /**
  * Get a single photo
  */
-export const show = async (req: Request, res: Response) => {};
+export const show = async (req: Request, res: Response) => {
+  const photoId = Number(req.params.photoId);
+  try {
+    const photo = await prisma.photo.findFirst({
+      where: {
+        id: photoId,
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: photo,
+    });
+  } catch (err) {
+    debug(
+      "Error thrown when finding photo with id %o: %o",
+      req.params.bookId,
+      err
+    );
+    return res.status(404).send({ status: "error", message: "Not found" });
+  }
+};
 
 /**
  * Create a new photo
