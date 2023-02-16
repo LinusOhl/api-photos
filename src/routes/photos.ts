@@ -1,5 +1,5 @@
 /**
- * Router Template
+ * Photos Router
  */
 import express from "express";
 import { body } from "express-validator";
