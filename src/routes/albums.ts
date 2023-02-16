@@ -1,43 +1,43 @@
 /**
- * Router Template
+ * Album Router
  */
 import express from "express";
 import { body } from "express-validator";
 import {
-  index,
-  show,
-  store,
-  update,
-  addPhoto,
+  getAllAlbums,
+  getAlbum,
+  createAlbum,
+  updateAlbum,
+  addPhotos,
   removePhoto,
-  destroy,
+  deleteAlbum,
 } from "../controllers/album_controller";
 const router = express.Router();
 
 /**
  * GET /albums
  */
-router.get("/", index);
+router.get("/", getAllAlbums);
 
 /**
  * GET /albums/:albumId
  */
-router.get("/:albumId", show);
+router.get("/:albumId", getAlbum);
 
 /**
  * POST /albums
  */
-router.post("/", [], store);
+router.post("/", [], createAlbum);
 
 /**
  * PATCH /albums/:albumId
  */
-router.patch("/:albumId", [], update);
+router.patch("/:albumId", [], updateAlbum);
 
 /**
  * POST /albums/:albumId/photos
  */
-router.post("/:albumId/photos", [], addPhoto);
+router.post("/:albumId/photos", [], addPhotos);
 
 /**
  * DELETE /albums/:albumId/photos/:photoId
@@ -47,6 +47,6 @@ router.delete("/:albumId/photos/:photoId", removePhoto);
 /**
  * DELETE /albums/:albumId
  */
-router.delete("/:albumId", destroy);
+router.delete("/:albumId", deleteAlbum);
 
 export default router;
