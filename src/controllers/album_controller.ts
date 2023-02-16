@@ -95,7 +95,38 @@ export const createAlbum = async (req: Request, res: Response) => {
 /**
  * Update an album
  */
-export const updateAlbum = async (req: Request, res: Response) => {};
+export const updateAlbum = async (req: Request, res: Response) => {
+  const albumId = Number(req.params.albumId);
+
+  try {
+    const album = await prisma.album.updateMany({
+      where: {
+        id: albumId,
+        userId: req.token!.sub,
+      },
+      data: {
+        title: req.body.title,
+      },
+    });
+
+    const changedPhoto = await prisma.album.findFirst({
+      where: {
+        id: albumId,
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: changedPhoto,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Add photos to an album
