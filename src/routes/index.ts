@@ -1,5 +1,6 @@
 import express from "express";
 import photos from "./photos";
+import albums from "./albums";
 import { register, login, refresh } from "../controllers/user_controller";
 import { validateToken } from "../middlewares/auth/jwt";
 import { createUserRules } from "../validations/user_rules";
@@ -17,6 +18,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/photos", validateToken, photos);
+router.use("/albums", validateToken, albums);
 
 /**
  * POST /register
