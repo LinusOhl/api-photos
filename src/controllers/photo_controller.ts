@@ -62,7 +62,7 @@ export const getPhoto = async (req: Request, res: Response) => {
   } catch (err) {
     debug(
       "Error thrown when finding photo with id %o: %o",
-      req.params.bookId,
+      req.params.photoId,
       err
     );
     return res.status(404).send({ status: "error", message: "Not found" });
