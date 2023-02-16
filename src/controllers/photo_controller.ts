@@ -79,7 +79,11 @@ export const createPhoto = async (req: Request, res: Response) => {
         title: req.body.title,
         url: req.body.url,
         comment: req.body.comment,
-        userId: req.token!.sub,
+        user: {
+          connect: {
+            id: req.token!.sub,
+          },
+        },
       },
     });
 
@@ -88,6 +92,7 @@ export const createPhoto = async (req: Request, res: Response) => {
       data: photo,
     });
   } catch (err) {
+    console.log(req.body, err);
     debug("Error thrown when creating a photo %o: %o", req.body, err);
 
     res.status(500).send({
@@ -138,4 +143,32 @@ export const updatePhoto = async (req: Request, res: Response) => {
 /**
  * Delete a photo
  */
-export const deletePhoto = async (req: Request, res: Response) => {};
+export const deletePhoto = async (req: Request, res: Response) => {
+  const photoId = Number(req.params.photoId);
+
+  try {
+    const photo = await prisma.photo.deleteMany({
+      where: {
+        id: photoId,
+        userId: req.token!.sub,
+      },
+    });
+
+    const deletedPhoto = await prisma.photo.findMany({
+      where: {
+        id: photoId,
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: deletedPhoto,
+    });
+  } catch (err) {
+    return res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
