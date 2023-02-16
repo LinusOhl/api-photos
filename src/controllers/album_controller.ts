@@ -12,27 +12,69 @@ const debug = Debug("prisma-photos:album_controller");
 /**
  * Get all albums
  */
-export const index = async (req: Request, res: Response) => {};
+export const getAllAlbums = async (req: Request, res: Response) => {
+  try {
+    const albums = await prisma.album.findMany({
+      where: {
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: albums,
+    });
+  } catch (err) {
+    debug("Error thrown when finding albums", err);
+
+    res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Get a single album
  */
-export const show = async (req: Request, res: Response) => {};
+export const getAlbum = async (req: Request, res: Response) => {
+  const albumId = Number(req.params.albumId);
+  try {
+    const album = await prisma.album.findFirst({
+      where: {
+        id: albumId,
+        userId: req.token!.sub,
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: album,
+    });
+  } catch (err) {
+    debug(
+      "Error thrown when finding album with id %o: %o",
+      req.params.albumId,
+      err
+    );
+    return res.status(404).send({ status: "error", message: "Not found" });
+  }
+};
 
 /**
  * Create a new album
  */
-export const store = async (req: Request, res: Response) => {};
+export const createAlbum = async (req: Request, res: Response) => {};
 
 /**
  * Update an album
  */
-export const update = async (req: Request, res: Response) => {};
+export const updateAlbum = async (req: Request, res: Response) => {};
 
 /**
  * Add photos to an album
  */
-export const addPhoto = async (req: Request, res: Response) => {};
+export const addPhotos = async (req: Request, res: Response) => {};
 
 /**
  * Remove a photo from an album
@@ -42,4 +84,4 @@ export const removePhoto = async (req: Request, res: Response) => {};
 /**
  * Delete an album
  */
-export const destroy = async (req: Request, res: Response) => {};
+export const deleteAlbum = async (req: Request, res: Response) => {};
