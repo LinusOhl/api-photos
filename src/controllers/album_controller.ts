@@ -64,7 +64,33 @@ export const getAlbum = async (req: Request, res: Response) => {
 /**
  * Create a new album
  */
-export const createAlbum = async (req: Request, res: Response) => {};
+export const createAlbum = async (req: Request, res: Response) => {
+  try {
+    const album = await prisma.album.create({
+      data: {
+        title: req.body.title,
+        user: {
+          connect: {
+            id: req.token!.sub,
+          },
+        },
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: album,
+    });
+  } catch (err) {
+    console.log(req.body, err);
+    debug("Error thrown when creating a photo %o: %o", req.body, err);
+
+    res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Update an album
