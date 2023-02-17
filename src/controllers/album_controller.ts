@@ -45,6 +45,9 @@ export const getAlbum = async (req: Request, res: Response) => {
         id: albumId,
         userId: req.token!.sub,
       },
+      include: {
+        photos: true,
+      },
     });
 
     res.send({
@@ -83,7 +86,7 @@ export const createAlbum = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(req.body, err);
-    debug("Error thrown when creating a photo %o: %o", req.body, err);
+    debug("Error thrown when creating an album %o: %o", req.body, err);
 
     res.status(500).send({
       status: "error",
@@ -131,7 +134,53 @@ export const updateAlbum = async (req: Request, res: Response) => {
 /**
  * Add photos to an album
  */
-export const addPhotos = async (req: Request, res: Response) => {};
+export const addPhotos = async (req: Request, res: Response) => {
+  console.log("Photos to connect:", req.body.photoIds);
+  const photoIds = req.body.photoIds.map((photoId: number) => {
+    return {
+      id: photoId,
+    };
+  });
+  console.log(photoIds);
+
+  try {
+    for (let i = 0; i < photoIds.length; i++) {
+      const photo = await prisma.photo.findUnique({
+        where: { id: photoIds[i].id },
+      });
+
+      if (photo?.userId !== req.token!.sub) {
+        return res
+          .status(401)
+          .send({ status: "fail", message: "Unauthorized" });
+      }
+    }
+
+    const result = await prisma.album.update({
+      where: {
+        id: Number(req.params.albumId),
+        // userId: req.token!.sub,
+      },
+      data: {
+        photos: {
+          connect: photoIds,
+        },
+      },
+    });
+    res.send({
+      status: "success",
+      data: result,
+    });
+  } catch (err) {
+    console.log(req.body, err);
+    debug("Error thrown when adding a photo to an album %o: %o", req.body, err);
+
+    res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Remove a photo from an album
