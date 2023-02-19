@@ -185,7 +185,52 @@ export const addPhotos = async (req: Request, res: Response) => {
 /**
  * Remove a photo from an album
  */
-export const removePhoto = async (req: Request, res: Response) => {};
+export const removePhoto = async (req: Request, res: Response) => {
+  try {
+    const album = await prisma.album.findUnique({
+      where: { id: Number(req.params.albumId) },
+    });
+    const photo = await prisma.photo.findUnique({
+      where: { id: Number(req.params.photoId) },
+    });
+
+    if (album?.userId && photo?.userId !== req.token!.sub) {
+      return res.status(401).send({
+        status: "fail",
+        message: "Unauthoriezed",
+      });
+    }
+
+    await prisma.album.update({
+      where: {
+        id: album?.id,
+      },
+      data: {
+        photos: {
+          disconnect: {
+            id: photo?.id,
+          },
+        },
+      },
+    });
+
+    res.send({
+      status: "success",
+      data: null,
+    });
+  } catch (err) {
+    debug(
+      "Error thrown when removing a photo from an album %o: %o",
+      req.body,
+      err
+    );
+
+    res.status(500).send({
+      status: "error",
+      message: "Something went wrong",
+    });
+  }
+};
 
 /**
  * Delete an album
