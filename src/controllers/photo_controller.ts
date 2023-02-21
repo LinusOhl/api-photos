@@ -13,9 +13,6 @@ const debug = Debug("prisma-photos:photo_controller");
  * Get all photos
  */
 export const getAllPhotos = async (req: Request, res: Response) => {
-  // const profile = getUserByEmail(req.token!.email);
-  console.log(req.token);
-
   try {
     const photos = await prisma.photo.findMany({
       where: {
@@ -28,7 +25,7 @@ export const getAllPhotos = async (req: Request, res: Response) => {
       data: photos,
     });
   } catch (err) {
-    debug("Error thrown when finding photos", err);
+    debug("Error thrown when getting all photos:", err);
 
     res.status(500).send({
       status: "error",
@@ -60,12 +57,9 @@ export const getPhoto = async (req: Request, res: Response) => {
       },
     });
   } catch (err) {
-    debug(
-      "Error thrown when finding photo with id %o: %o",
-      req.params.photoId,
-      err
-    );
-    return res.status(404).send({ status: "error", message: "Not found" });
+    debug("Error thrown when getting a photo by id:", err);
+
+    res.status(404).send({ status: "error", message: "Not found" });
   }
 };
 
@@ -92,8 +86,7 @@ export const createPhoto = async (req: Request, res: Response) => {
       data: photo,
     });
   } catch (err) {
-    console.log(req.body, err);
-    debug("Error thrown when creating a photo %o: %o", req.body, err);
+    debug("Error thrown when creating a new photo:", err);
 
     res.status(500).send({
       status: "error",
@@ -133,7 +126,9 @@ export const updatePhoto = async (req: Request, res: Response) => {
       data: changedPhoto,
     });
   } catch (err) {
-    return res.status(500).send({
+    debug("Error thrown when updating a photo:", err);
+
+    res.status(500).send({
       status: "error",
       message: "Something went wrong",
     });
@@ -187,7 +182,8 @@ export const deletePhoto = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    return res.status(500).send({
+    debug("Error thrown when deleting a photo:", err);
+    res.status(500).send({
       status: "error",
       message: "Something went wrong",
     });
