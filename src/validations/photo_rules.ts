@@ -2,7 +2,6 @@
  * Validation Rules for Photo resource
  */
 import { body } from "express-validator";
-import { getUserByEmail } from "../services/user_service";
 
 export const createPhotoRules = [
   body("title")
