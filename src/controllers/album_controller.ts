@@ -25,7 +25,7 @@ export const getAllAlbums = async (req: Request, res: Response) => {
       data: albums,
     });
   } catch (err) {
-    debug("Error thrown when finding albums", err);
+    debug("Error thrown when getting all albums:", err);
 
     res.status(500).send({
       status: "error",
@@ -55,12 +55,9 @@ export const getAlbum = async (req: Request, res: Response) => {
       data: album,
     });
   } catch (err) {
-    debug(
-      "Error thrown when finding album with id %o: %o",
-      req.params.albumId,
-      err
-    );
-    return res.status(404).send({ status: "error", message: "Not found" });
+    debug("Error thrown when finding album by id:", err);
+
+    res.status(404).send({ status: "error", message: "Not found" });
   }
 };
 
@@ -85,8 +82,7 @@ export const createAlbum = async (req: Request, res: Response) => {
       data: album,
     });
   } catch (err) {
-    console.log(req.body, err);
-    debug("Error thrown when creating an album %o: %o", req.body, err);
+    debug("Error thrown when creating an album:", err);
 
     res.status(500).send({
       status: "error",
@@ -102,7 +98,7 @@ export const updateAlbum = async (req: Request, res: Response) => {
   const albumId = Number(req.params.albumId);
 
   try {
-    const album = await prisma.album.updateMany({
+    await prisma.album.updateMany({
       where: {
         id: albumId,
         userId: req.token!.sub,
@@ -124,7 +120,9 @@ export const updateAlbum = async (req: Request, res: Response) => {
       data: changedPhoto,
     });
   } catch (err) {
-    return res.status(500).send({
+    debug("Error thrown when updating an album:", err);
+
+    res.status(500).send({
       status: "error",
       message: "Something went wrong",
     });
@@ -135,13 +133,11 @@ export const updateAlbum = async (req: Request, res: Response) => {
  * Add photos to an album
  */
 export const addPhotos = async (req: Request, res: Response) => {
-  console.log("Photos to connect:", req.body.photoIds);
   const photoIds = req.body.photoIds.map((photoId: number) => {
     return {
       id: photoId,
     };
   });
-  console.log(photoIds);
 
   try {
     for (let i = 0; i < photoIds.length; i++) {
@@ -159,7 +155,6 @@ export const addPhotos = async (req: Request, res: Response) => {
     const result = await prisma.album.update({
       where: {
         id: Number(req.params.albumId),
-        // userId: req.token!.sub,
       },
       data: {
         photos: {
@@ -172,8 +167,7 @@ export const addPhotos = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (err) {
-    console.log(req.body, err);
-    debug("Error thrown when adding a photo to an album %o: %o", req.body, err);
+    debug("Error thrown when adding photos to an album:", err);
 
     res.status(500).send({
       status: "error",
@@ -219,11 +213,7 @@ export const removePhoto = async (req: Request, res: Response) => {
       data: null,
     });
   } catch (err) {
-    debug(
-      "Error thrown when removing a photo from an album %o: %o",
-      req.body,
-      err
-    );
+    debug("Error thrown when removing a photo from an album:", err);
 
     res.status(500).send({
       status: "error",
@@ -255,7 +245,7 @@ export const deleteAlbum = async (req: Request, res: Response) => {
       });
     }
 
-    const result = await prisma.album.update({
+    await prisma.album.update({
       where: {
         id: album.id,
       },
@@ -266,7 +256,7 @@ export const deleteAlbum = async (req: Request, res: Response) => {
       },
     });
 
-    await prisma.album.delete({
+    const result = await prisma.album.delete({
       where: {
         id: album.id,
       },
@@ -274,10 +264,10 @@ export const deleteAlbum = async (req: Request, res: Response) => {
 
     res.send({
       status: "success",
-      data: null,
+      data: result,
     });
   } catch (err) {
-    debug("Error thrown when deleting an album %o: %o", req.body, err);
+    debug("Error thrown when deleting an album:", err);
 
     res.status(500).send({
       status: "error",
