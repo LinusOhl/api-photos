@@ -2,7 +2,6 @@
  * Album Router
  */
 import express from "express";
-import { body } from "express-validator";
 import {
   getAllAlbums,
   getAlbum,
@@ -12,6 +11,11 @@ import {
   removePhoto,
   deleteAlbum,
 } from "../controllers/album_controller";
+import {
+  createAlbumRules,
+  updateAlbumRules,
+  addPhotoRules,
+} from "../validations/album_rules";
 const router = express.Router();
 
 /**
@@ -27,17 +31,17 @@ router.get("/:albumId", getAlbum);
 /**
  * POST /albums
  */
-router.post("/", [], createAlbum);
+router.post("/", createAlbumRules, createAlbum);
 
 /**
  * PATCH /albums/:albumId
  */
-router.patch("/:albumId", [], updateAlbum);
+router.patch("/:albumId", updateAlbumRules, updateAlbum);
 
 /**
  * POST /albums/:albumId/photos
  */
-router.post("/:albumId/photos", [], addPhotos);
+router.post("/:albumId/photos", addPhotoRules, addPhotos);
 
 /**
  * DELETE /albums/:albumId/photos/:photoId
