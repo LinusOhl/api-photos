@@ -144,26 +144,47 @@ export const updatePhoto = async (req: Request, res: Response) => {
  * Delete a photo
  */
 export const deletePhoto = async (req: Request, res: Response) => {
-  const photoId = Number(req.params.photoId);
+  const photo = await prisma.photo.findUnique({
+    where: {
+      id: Number(req.params.photoId),
+    },
+    include: {
+      albums: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
 
   try {
-    const photo = await prisma.photo.deleteMany({
+    if (photo?.userId !== req.token!.sub) {
+      return res.status(401).send({
+        status: "fail",
+        message: "Unauthorized",
+      });
+    }
+
+    await prisma.photo.update({
       where: {
-        id: photoId,
-        userId: req.token!.sub,
+        id: photo.id,
+      },
+      data: {
+        albums: {
+          disconnect: photo.albums,
+        },
       },
     });
 
-    const deletedPhoto = await prisma.photo.findMany({
+    const result = await prisma.photo.delete({
       where: {
-        id: photoId,
-        userId: req.token!.sub,
+        id: photo.id,
       },
     });
 
     res.send({
       status: "success",
-      data: deletedPhoto,
+      data: result,
     });
   } catch (err) {
     return res.status(500).send({
