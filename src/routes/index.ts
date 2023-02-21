@@ -17,7 +17,14 @@ router.get("/", (req, res) => {
   });
 });
 
+/**
+ * /photos
+ */
 router.use("/photos", validateToken, photos);
+
+/**
+ * /albums
+ */
 router.use("/albums", validateToken, albums);
 
 /**
