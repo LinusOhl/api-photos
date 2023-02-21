@@ -65,6 +65,15 @@ export const getAlbum = async (req: Request, res: Response) => {
  * Create a new album
  */
 export const createAlbum = async (req: Request, res: Response) => {
+  const validationErrors = validationResult(req);
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).send({
+      status: "fail",
+      data: validationErrors.array(),
+    });
+  }
+
   try {
     const album = await prisma.album.create({
       data: {
@@ -95,6 +104,15 @@ export const createAlbum = async (req: Request, res: Response) => {
  * Update an album
  */
 export const updateAlbum = async (req: Request, res: Response) => {
+  const validationErrors = validationResult(req);
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).send({
+      status: "fail",
+      data: validationErrors.array(),
+    });
+  }
+
   const albumId = Number(req.params.albumId);
 
   try {
@@ -133,6 +151,15 @@ export const updateAlbum = async (req: Request, res: Response) => {
  * Add photos to an album
  */
 export const addPhotos = async (req: Request, res: Response) => {
+  const validationErrors = validationResult(req);
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).send({
+      status: "fail",
+      data: validationErrors.array(),
+    });
+  }
+
   const photoIds = req.body.photoIds.map((photoId: number) => {
     return {
       id: photoId,

@@ -67,6 +67,15 @@ export const getPhoto = async (req: Request, res: Response) => {
  * Create a new photo
  */
 export const createPhoto = async (req: Request, res: Response) => {
+  const validationErrors = validationResult(req);
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).send({
+      status: "fail",
+      data: validationErrors.array(),
+    });
+  }
+
   try {
     const photo = await prisma.photo.create({
       data: {
@@ -99,6 +108,15 @@ export const createPhoto = async (req: Request, res: Response) => {
  * Update a photo
  */
 export const updatePhoto = async (req: Request, res: Response) => {
+  const validationErrors = validationResult(req);
+
+  if (!validationErrors.isEmpty()) {
+    return res.status(400).send({
+      status: "fail",
+      data: validationErrors.array(),
+    });
+  }
+
   const photoId = Number(req.params.photoId);
 
   try {
