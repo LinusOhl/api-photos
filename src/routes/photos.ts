@@ -10,6 +10,7 @@ import {
   updatePhoto,
   deletePhoto,
 } from "../controllers/photo_controller";
+import { createPhotoRules, updatePhotoRules } from "../validations/photo_rules";
 const router = express.Router();
 
 /**
@@ -25,12 +26,12 @@ router.get("/:photoId", getPhoto);
 /**
  * POST /photos
  */
-router.post("/", [], createPhoto);
+router.post("/", createPhotoRules, createPhoto);
 
 /**
  * PATCH /photos/:photoId
  */
-router.patch("/:photoId", [], updatePhoto);
+router.patch("/:photoId", updatePhotoRules, updatePhoto);
 
 /**
  * DELETE /photos/:photoId
