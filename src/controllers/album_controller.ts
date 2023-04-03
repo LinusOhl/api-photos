@@ -160,7 +160,7 @@ export const addPhotos = async (req: Request, res: Response) => {
     });
   }
 
-  const photoIds = req.body.photoIds.map((photoId: number) => {
+  const photoIds = req.body.photo_id.map((photoId: number) => {
     return {
       id: photoId,
     };
